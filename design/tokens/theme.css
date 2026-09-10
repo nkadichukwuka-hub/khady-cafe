@@ -1,0 +1,94 @@
+/* ===========================================================================
+   Khady's Café — design tokens (canonical source)
+
+   This is the single source of truth for the token system. The @theme block
+   below is copied verbatim into app/globals.css so Tailwind v4 generates the
+   matching utilities (bg-espresso, text-h1, px-gutter, rounded-sm, …).
+
+   When a token changes: edit it here, then paste the @theme block into
+   app/globals.css. Nothing else references raw hex values.
+   =========================================================================== */
+
+@theme {
+  /* --- Color -------------------------------------------------------------
+     Warm monochrome, derived from coffee. There is deliberately no pop
+     accent: depth comes from layering cream → foam → latte → bean, and the
+     only chromatic note is `bronze`, reserved for star ratings, the focus
+     ring, and small price ticks.
+
+     Contrast (against --color-cream):
+       espresso  ~13.3:1   body + headings
+       mocha      ~5.7:1   secondary text (AA for body)
+       bronze     ~3.6:1   UI / large text / graphics only — never body copy
+       clay       ~2.6:1   disabled + placeholder only
+  */
+  --color-cream: #f4ebdc; /* page ground */
+  --color-foam: #fcf8f1; /* raised surface: cards, menus, inputs */
+  --color-latte: #ebddc6; /* filled secondary panel, image mats */
+  --color-line: #dac7a8; /* borders, dividers, hairline rules */
+  --color-clay: #a98763; /* disabled text, input placeholder */
+  --color-mocha: #6e5442; /* secondary text, captions, italic emphasis */
+  --color-espresso: #2a1c12; /* primary text, near-black */
+  --color-bean: #3a2417; /* dark sections, primary button fill */
+  --color-bean-hover: #4a2f1e; /* primary button hover */
+  --color-bronze: #9c6f3a; /* accent: ratings, focus ring, price ticks */
+  --color-bronze-soft: #c89b5e; /* accent on dark (bean) surfaces */
+
+  --color-background: var(--color-cream);
+  --color-foreground: var(--color-espresso);
+
+  /* --- Type families ---------------------------------------------------- */
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+
+  /* --- Type scale ------------------------------------------------------------
+     Display sizes (h3 and up) are set in Fraunces; body sizes in Hanken
+     Grotesk. Ratio is roughly a minor third, tightened at the top. Line
+     heights ship as paired --text-*--line-height tokens so `text-h1` etc.
+     carry their own leading.
+  */
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.4;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.5;
+  --text-body: 1rem;
+  --text-body--line-height: 1.65;
+  --text-lead: 1.25rem;
+  --text-lead--line-height: 1.6;
+  --text-h3: 1.375rem;
+  --text-h3--line-height: 1.25;
+  --text-h2: 1.875rem;
+  --text-h2--line-height: 1.15;
+  --text-h1: 2.5rem;
+  --text-h1--line-height: 1.1;
+  --text-hero: 3.5rem;
+  --text-hero--line-height: 1.05;
+  --text-display: 4.5rem;
+  --text-display--line-height: 1;
+
+  /* --- Radius --------------------------------------------------------------
+     Editorial and near-square. Nothing in the system is fully rounded except
+     the stamp and the (optional) avatar.
+  */
+  --radius-xs: 2px; /* tags, inline code */
+  --radius-sm: 4px; /* buttons, cards, inputs — the default */
+  --radius-md: 8px; /* media wells, larger figures */
+  --radius-lg: 16px; /* full-bleed feature panels */
+
+  /* --- Layout ------------------------------------------------------------- */
+  --spacing-gutter: 1.5rem; /* min page side padding; -> px-gutter */
+  --container-content: 77.5rem; /* 1240px page max width; -> max-w-content */
+  --container-prose: 42rem; /* ~66ch reading measure; overrides max-w-prose */
+
+  /* --- Motion ------------------------------------------------------------- */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* The one piece of ambient (non-user-triggered) motion: the rotating stamp.
+   Keep this in globals.css alongside the @theme block. The global
+   prefers-reduced-motion rule neutralizes it. */
+@keyframes kc-stamp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

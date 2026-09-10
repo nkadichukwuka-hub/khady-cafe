@@ -1,0 +1,21 @@
+category,name,description,price,badge
+Espresso Drinks,Espresso,"Two ounces of our weekly single-origin, pulled short and bright.",3.25,
+Espresso Drinks,Cortado,"Equal parts espresso and warm milk, served in a small glass.",3.75,
+Espresso Drinks,Cappuccino,"A double shot under a deep layer of dense, dry foam.",4.25,
+Espresso Drinks,Flat White,"Double ristretto and silky steamed milk, no dry foam.",4.50,Popular
+Espresso Drinks,Cafe au Lait,"House drip and steamed milk in equal measure, easy and unfussy.",4.00,
+Espresso Drinks,Mocha,"Espresso, steamed milk, and 70% dark chocolate ganache.",4.75,House favourite
+Cold Drinks,Iced Latte,"Double shot over ice with your choice of milk.",4.75,
+Cold Drinks,Cold Brew,"Steeped eighteen hours for a smooth, low-acidity cup.",4.50,Popular
+Cold Drinks,Vanilla Drift Cold Brew,"Cold brew with house vanilla syrup and a splash of oat milk.",5.25,House favourite
+Cold Drinks,Iced Matcha Latte,"Stone-ground ceremonial matcha, cold milk, lightly sweetened.",5.50,
+Cold Drinks,Sparkling Hibiscus,"House hibiscus-ginger tea over ice, topped with soda.",4.00,
+Pastries,Almond Croissant,"Twice-baked with almond cream and toasted flaked almonds.",4.25,House favourite
+Pastries,Butter Croissant,"Laminated over three days with French butter. Baked at six.",3.50,
+Pastries,Pain au Chocolat,"Two batons of dark chocolate folded into buttery layers.",3.75,Popular
+Pastries,Morning Bun,"Croissant dough rolled in orange zest and cinnamon sugar.",4.00,
+Pastries,Banana Bread,"Loaf-style, brown butter and walnuts, toasted on request.",3.75,
+Sandwiches,Egg and Gruyere on Brioche,"Soft scrambled eggs, aged Gruyere, and chive on a toasted brioche bun.",7.50,Popular
+Sandwiches,Turkey and Havarti,"Roast turkey, dill Havarti, greens, and whole-grain mustard on sourdough.",9.00,
+Sandwiches,Caprese Baguette,"Fresh mozzarella, tomato, basil, and olive oil on a crisp baguette.",8.50,House favourite
+Sandwiches,Ham and Butter Baguette,"Paris ham and cultured butter on baguette. Nothing else, on purpose.",8.00,

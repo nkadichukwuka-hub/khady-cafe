@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Khady's Café — design tokens
+   The single source of truth lives in design/tokens/theme.css.
+   Keep this @theme block and that file in sync.
+--------------------------------------------------------------------------- */
+
+@theme {
+  /* Color — warm monochrome, coffee-derived. No pop accent. */
+  --color-cream: #f4ebdc; /* page ground */
+  --color-foam: #fcf8f1; /* raised surface: cards, menus */
+  --color-latte: #ebddc6; /* filled secondary panel */
+  --color-line: #dac7a8; /* borders, dividers, rules */
+  --color-clay: #a98763; /* faint / disabled text, placeholder */
+  --color-mocha: #6e5442; /* secondary text, captions */
+  --color-espresso: #2a1c12; /* primary text, near-black */
+  --color-bean: #3a2417; /* dark sections, primary button fill */
+  --color-bean-hover: #4a2f1e; /* primary button hover */
+  --color-bronze: #9c6f3a; /* accent: ratings, focus ring, price ticks */
+  --color-bronze-soft: #c89b5e; /* accent on dark surfaces */
+
+  --color-background: var(--color-cream);
+  --color-foreground: var(--color-espresso);
+
+  /* Type families */
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+
+  /* Type scale — Fraunces display + Hanken body, ~1.2 ratio */
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.4;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.5;
+  --text-body: 1rem;
+  --text-body--line-height: 1.65;
+  --text-lead: 1.25rem;
+  --text-lead--line-height: 1.6;
+  --text-h3: 1.375rem;
+  --text-h3--line-height: 1.25;
+  --text-h2: 1.875rem;
+  --text-h2--line-height: 1.15;
+  --text-h1: 2.5rem;
+  --text-h1--line-height: 1.1;
+  --text-hero: 3.5rem;
+  --text-hero--line-height: 1.05;
+  --text-display: 4.5rem;
+  --text-display--line-height: 1;
+
+  /* Radius — editorial, near-square */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+
+  /* Layout */
+  --spacing-gutter: 1.5rem;
+  --container-content: 77.5rem; /* 1240px */
+  --container-prose: 42rem; /* ~66ch body measure */
+
+  /* Motion */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Base ---------------------------------------------------------------------- */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-cream);
+    color: var(--color-espresso);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-optical-sizing: auto;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* One shared, visible focus treatment across the system */
+  :focus-visible {
+    outline: 2px solid var(--color-bronze);
+    outline-offset: 2px;
+    border-radius: var(--radius-xs);
+  }
+
+  ::selection {
+    background: var(--color-bean);
+    color: var(--color-cream);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* The rotating stamp — the one piece of non-user-triggered motion.
+   Neutralized by the reduced-motion block above. */
+@keyframes kc-stamp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
