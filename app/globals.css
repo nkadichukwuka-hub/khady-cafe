@@ -124,3 +124,107 @@
     transform: rotate(360deg);
   }
 }
+
+/* n8n chat widget theming -----------------------------------------------
+   @n8n/chat (components/ui/ChatWidget.tsx) ships its own pink/teal
+   stylesheet, themed entirely through --chat--* custom properties. Every
+   one used below is remapped to an existing token (see design/tokens.md)
+   so the widget reads as part of the system rather than a bolted-on
+   plugin. Scoped to #n8n-chat, the container the widget mounts itself
+   into at the end of <body>. */
+#n8n-chat {
+  /* Primitives the rest of the widget's palette derives from */
+  --chat--color--primary: var(--color-bean);
+  --chat--color--secondary: var(--color-bronze);
+  --chat--color-white: var(--color-foam);
+  --chat--color-light: var(--color-cream);
+  --chat--color-light-shade-50: var(--color-latte);
+  --chat--color-light-shade-100: var(--color-line);
+  --chat--color-medium: var(--color-line);
+  --chat--color-dark: var(--color-espresso);
+  --chat--color-disabled: var(--color-clay);
+  --chat--color-typing: var(--color-clay);
+
+  /* Type, radius, motion */
+  --chat--font-family: var(--font-sans);
+  --chat--border-radius: var(--radius-sm);
+  --chat--transition-duration: 200ms;
+
+  /* Window frame — border, not shadow (style-guide.md §2) */
+  --chat--window--border: 1px solid var(--color-line);
+  --chat--window--border-radius: var(--radius-sm);
+  /* Match the site's 24px min side gutter (style-guide.md §4) instead of
+     the widget's own 16px default */
+  --chat--window--right: var(--spacing-gutter);
+  --chat--window--bottom: var(--spacing-gutter);
+
+  /* Header — dark surface: bean ground, cream text (style-guide.md §2) */
+  --chat--header--background: var(--color-bean);
+  --chat--header--color: var(--color-cream);
+
+  /* Body + messages */
+  --chat--body--background: var(--color-cream);
+  --chat--message--border-radius: var(--radius-sm);
+  --chat--message--bot--background: var(--color-foam);
+  --chat--message--bot--color: var(--color-espresso);
+  --chat--message--bot--border: 1px solid var(--color-line);
+  --chat--message--user--background: var(--color-bean);
+  --chat--message--user--color: var(--color-cream);
+  --chat--message--pre--background: var(--color-latte);
+  --chat--message--actions--color: var(--color-bronze);
+
+  /* Toggle bubble */
+  --chat--toggle--background: var(--color-bean);
+  --chat--toggle--hover--background: var(--color-bean-hover);
+  --chat--toggle--active--background: var(--color-bean-hover);
+  --chat--toggle--color: var(--color-cream);
+
+  /* Input */
+  --chat--input--background: var(--color-foam);
+  --chat--input--text-color: var(--color-espresso);
+  --chat--input--border-radius: var(--radius-sm);
+  --chat--input--container--background: var(--color-foam);
+  --chat--input--container--border: 1px solid var(--color-line);
+  --chat--input--container--border-radius: var(--radius-sm);
+  --chat--input--send--button--color: var(--color-bean);
+  --chat--input--send--button--color-hover: var(--color-bean-hover);
+  --chat--input--file--button--color: var(--color-bean);
+  --chat--input--file--button--color-hover: var(--color-bean-hover);
+
+  /* Buttons (get-started screen, quick replies) */
+  --chat--button--background--primary: var(--color-bean);
+  --chat--button--color--primary: var(--color-cream);
+  --chat--button--background--primary--hover: var(--color-bean-hover);
+  --chat--button--background--secondary: var(--color-latte);
+  --chat--button--color--secondary: var(--color-espresso);
+
+  /* Footer / "powered by" strip */
+  --chat--footer--background: var(--color-cream);
+  --chat--footer--color: var(--color-mocha);
+  --chat--footer--border-top: 1px solid var(--color-line);
+
+  --chat--close--button--color-hover: var(--color-bean-hover);
+}
+
+/* The widget resets `outline` to 0/none on its own interactive elements —
+   restore the site's non-negotiable focus ring inside it (style-guide.md
+   §8: ":focus-visible ... don't remove it per-component"). */
+#n8n-chat :focus-visible {
+  outline: 2px solid var(--color-bronze) !important;
+  outline-offset: 2px !important;
+  border-radius: var(--radius-xs);
+}
+
+/* The widget ships no responsive handling at all — its window is a fixed
+   400x600px panel with no media queries of its own. Shrink it to fit the
+   viewport below that width so it stays usable and doesn't overflow the
+   screen at 360px (style-guide.md §8). */
+@media (max-width: 480px) {
+  #n8n-chat {
+    --chat--window--width: calc(100vw - (2 * var(--chat--window--right)));
+    --chat--window--height: min(
+      600px,
+      calc(100vh - (2 * var(--chat--window--bottom)))
+    );
+  }
+}

@@ -1,11 +1,11 @@
 "use client";
 
-import { useActionState, useState } from "react";
-import { reserveTable } from "@/app/reserve/actions";
+import { useState, type FormEvent } from "react";
 import {
   PARTY_SIZES,
   RESERVATION_SLOTS,
-  initialReserveState,
+  type ReserveErrors,
+  type ReserveValues,
 } from "@/lib/reservation";
 import { Button } from "./Button";
 import { Dialog } from "./Dialog";
@@ -19,13 +19,25 @@ type ReserveTableFormProps = {
   className?: string;
 };
 
+type FormState =
+  | { status: "idle" }
+  | {
+      status: "error";
+      attempt: number;
+      errors: ReserveErrors;
+      values: ReserveValues;
+      formError?: string;
+    }
+  | { status: "success"; message: string };
+
 const todayISO = () => new Date().toISOString().slice(0, 10);
 
 /**
- * "Reserve a table" trigger + modal form. The form posts to a server action
- * that validates and returns a confirmation (there is no booking backend yet).
- * On error the fields remount so the guest's entries reappear; on success the
- * dialog body swaps to the confirmation and stays open until dismissed.
+ * "Reserve a table" trigger + modal form. Submits to `POST /api/reserve`,
+ * which validates the request and forwards it to the booking webhook from
+ * the server — the webhook URL and secret never reach the browser. On error
+ * the fields remount so the guest's entries reappear; on success the dialog
+ * body swaps to the confirmation and stays open until dismissed.
  */
 export function ReserveTableForm({
   triggerLabel = "Reserve a table",
@@ -34,14 +46,56 @@ export function ReserveTableForm({
   className,
 }: ReserveTableFormProps) {
   const [open, setOpen] = useState(false);
-  const [state, formAction, pending] = useActionState(
-    reserveTable,
-    initialReserveState,
-  );
+  const [pending, setPending] = useState(false);
+  const [state, setState] = useState<FormState>({ status: "idle" });
 
   const errors = state.status === "error" ? state.errors : undefined;
   const values = state.status === "error" ? state.values : undefined;
   const resetKey = state.status === "error" ? state.attempt : 0;
+  const nextAttempt = state.status === "error" ? state.attempt + 1 : 1;
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const nextValues: ReserveValues = {
+      name: String(formData.get("name") ?? "").trim(),
+      partySize: String(formData.get("partySize") ?? ""),
+      date: String(formData.get("date") ?? ""),
+      time: String(formData.get("time") ?? ""),
+    };
+
+    setPending(true);
+    try {
+      const response = await fetch("/api/reserve", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(nextValues),
+      });
+      const result = await response.json();
+
+      if (result.ok) {
+        setState({ status: "success", message: result.message });
+      } else {
+        setState({
+          status: "error",
+          attempt: nextAttempt,
+          errors: result.errors ?? {},
+          values: nextValues,
+          formError: result.errors ? undefined : result.error,
+        });
+      }
+    } catch {
+      setState({
+        status: "error",
+        attempt: nextAttempt,
+        errors: {},
+        values: nextValues,
+        formError: "Something went wrong — please try again or call us.",
+      });
+    } finally {
+      setPending(false);
+    }
+  }
 
   return (
     <>
@@ -68,7 +122,12 @@ export function ReserveTableForm({
             </Button>
           </div>
         ) : (
-          <form action={formAction} className="flex flex-col gap-5">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            {state.status === "error" && state.formError ? (
+              <p role="alert" className="text-body text-espresso">
+                {state.formError}
+              </p>
+            ) : null}
             <div key={resetKey} className="flex flex-col gap-4">
               <Field
                 label="Name for the booking"
