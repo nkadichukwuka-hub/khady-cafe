@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Hanken_Grotesk } from "next/font/google";
 import { ChatWidget } from "@/components/ui/ChatWidget";
+import { VoiceWidget } from "@/components/ui/VoiceWidget";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col bg-cream text-espresso">
         {children}
         <ChatWidget />
+        <VoiceWidget />
       </body>
     </html>
   );
