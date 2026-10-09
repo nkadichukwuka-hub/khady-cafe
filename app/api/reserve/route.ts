@@ -54,7 +54,8 @@ function validate(values: ReserveValues): ReserveErrors {
 
 /**
  * Receives a reservation request from `ReserveTableForm`, validates it, and
- * forwards it to the booking webhook (an n8n workflow) from the server.
+ * forwards it to the booking webhook (an n8n workflow) from the server when one
+ * is configured, otherwise answers with a demo confirmation.
  * `RESERVATION_WEBHOOK_URL` / `RESERVATION_WEBHOOK_SECRET` live only in
  * server env vars — never sent to, or readable by, the browser.
  */
@@ -81,6 +82,43 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, errors }, { status: 400 });
   }
 
+  const dayLabel = new Intl.DateTimeFormat("en-GB", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  }).format(new Date(`${values.date}T00:00:00`));
+  const tableFor = `${partySizeLabel(values.partySize).toLowerCase()} on ${dayLabel} at ${slotLabel(values.time)}`;
+
+  // Try the real booking system first. If it isn't configured or can't be
+  // reached (this is a demo café), fall back to a clear demo confirmation so
+  // visitors never see a broken form.
+  const delivered = await forwardToBookingSystem(values);
+
+  if (!delivered) {
+    console.info("[reserve] Booking system unavailable, showing demo confirmation", {
+      ...values,
+      receivedAt: new Date().toISOString(),
+    });
+    return NextResponse.json({
+      ok: true,
+      demo: true,
+      message: `Thanks ${values.name}. This is a demo café, so a table for ${tableFor} wasn't actually booked. In a real café this request would go straight to the team.`,
+    });
+  }
+
+  console.info("[reserve] Booking forwarded to webhook", {
+    ...values,
+    receivedAt: new Date().toISOString(),
+  });
+
+  return NextResponse.json({
+    ok: true,
+    message: `Thanks ${values.name} — we've pencilled in a table for ${tableFor}. We'll email to confirm.`,
+  });
+}
+
+/** Sends the booking to the n8n webhook. Returns false if it can't be delivered. */
+async function forwardToBookingSystem(values: ReserveValues): Promise<boolean> {
   const webhookUrl = process.env.RESERVATION_WEBHOOK_URL;
   const webhookSecret = process.env.RESERVATION_WEBHOOK_SECRET;
 
@@ -88,14 +126,7 @@ export async function POST(request: Request) {
     console.error(
       "[reserve] Missing RESERVATION_WEBHOOK_URL or RESERVATION_WEBHOOK_SECRET env var",
     );
-    return NextResponse.json(
-      {
-        ok: false,
-        error:
-          "Online booking isn't available right now — please call us instead.",
-      },
-      { status: 500 },
-    );
+    return false;
   }
 
   try {
@@ -110,50 +141,18 @@ export async function POST(request: Request) {
         groupSize: Number(values.partySize),
         bookingTime: `${values.date}T${values.time}:00`,
       }),
+      signal: AbortSignal.timeout(10000),
     });
 
     if (!webhookResponse.ok) {
       console.error(
         `[reserve] Webhook responded with ${webhookResponse.status} ${webhookResponse.statusText}`,
       );
-      return NextResponse.json(
-        {
-          ok: false,
-          error:
-            "We couldn't reach the booking system — please try again or call us.",
-        },
-        { status: 502 },
-      );
+      return false;
     }
+    return true;
   } catch (err) {
     console.error("[reserve] Webhook request failed:", err);
-    return NextResponse.json(
-      {
-        ok: false,
-        error:
-          "We couldn't reach the booking system — please try again or call us.",
-      },
-      { status: 502 },
-    );
+    return false;
   }
-
-  console.info("[reserve] Booking forwarded to webhook", {
-    ...values,
-    receivedAt: new Date().toISOString(),
-  });
-
-  const dayLabel = new Intl.DateTimeFormat("en-GB", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  }).format(new Date(`${values.date}T00:00:00`));
-
-  return NextResponse.json({
-    ok: true,
-    message: `Thanks ${values.name} — we've pencilled in a table for ${partySizeLabel(
-      values.partySize,
-    ).toLowerCase()} on ${dayLabel} at ${slotLabel(
-      values.time,
-    )}. We'll email to confirm.`,
-  });
 }

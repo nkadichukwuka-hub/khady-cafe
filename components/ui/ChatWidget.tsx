@@ -21,7 +21,7 @@ export function ChatWidget() {
       showWelcomeScreen: false,
       initialMessages: [
         "Hi, welcome to Khady's Café.",
-        "Ask about the menu, opening hours, or booking a table.",
+        "Ask about the menu, opening hours, or our weekly events.",
       ],
       i18n: {
         en: {
