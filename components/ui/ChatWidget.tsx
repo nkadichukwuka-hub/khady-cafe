@@ -5,16 +5,13 @@ import { createChat } from "@n8n/chat";
 import "@n8n/chat/style.css";
 
 /**
- * Floating chat bubble backed by the café's n8n workflow. Renders no DOM of
- * its own — the widget mounts itself into a `#n8n-chat` div it creates in
- * `<body>`, which is why it's rendered once from the root layout rather than
- * per page. Themed to the design tokens via the `#n8n-chat` block in
- * `app/globals.css` (see `--chat--*` custom properties there).
- *
- * Points at `/api/chat` (a same-origin proxy, see `app/api/chat/route.ts`)
- * rather than the n8n webhook directly — the workflow's CORS setting only
- * allows one hardcoded origin, so a direct browser fetch fails from any
- * other origin (dev port, staging, production).
+ * Floating chat bubble. The UI comes from the @n8n/chat package; the answers
+ * come from `/api/chat` (`app/api/chat/route.ts`), which asks Gemini using the
+ * café's real menu, hours and events. Renders no DOM of its own — the widget
+ * mounts itself into a `#n8n-chat` div it creates in `<body>`, which is why
+ * it's rendered once from the root layout rather than per page. Themed to the
+ * design tokens via the `#n8n-chat` block in `app/globals.css` (see
+ * `--chat--*` custom properties there).
  */
 export function ChatWidget() {
   useEffect(() => {
